@@ -22,8 +22,9 @@ in vehicles (anywhere Quick Save works).
 
 ## Status
 
-Compiles against the Cyberpunk 2077 **2.5** macOS scripts. **Not yet verified
-in-game** — see [BACKLOG.md](BACKLOG.md).
+Verified in-game on Cyberpunk 2077 **2.5** for macOS (GOG, Apple M2 Pro): all four
+toggles work. Tested with a mod from 2.5's built-in mod.io support (Clear Skill
+Checks) installed at the same time.
 
 ## Requirements
 
