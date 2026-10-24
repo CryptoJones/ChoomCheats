@@ -17,7 +17,8 @@ module ChoomCheats
 // Settings. Edit, then run scripts/install.sh again.
 // ---------------------------------------------------------------------------
 public abstract class ChoomConfig {
-  // Eddies are topped back up to this amount while infinite money is on.
+  // Minimum eddies while infinite money is on. If you already have more when
+  // you switch it on, that balance is kept instead.
   public static func MoneyFloor() -> Int32 = 1000000
   // Carry capacity added while unlimited carry is on.
   public static func CarryBonus() -> Float = 100000.0
@@ -40,6 +41,7 @@ public class ChoomCheats extends IScriptable {
   private let m_player: wref<PlayerPuppet>;
   private let m_god: Bool;
   private let m_money: Bool;
+  private let m_moneyFloor: Int32;
   private let m_invisible: Bool;
   private let m_carry: Bool;
   private let m_carryMod: ref<gameStatModifierData>;
@@ -119,19 +121,24 @@ public class ChoomCheats extends IScriptable {
   }
 
   // ---- Infinite money -----------------------------------------------------
+  // While on, eddies never go below a floor: the configured minimum or the
+  // balance when the cheat was switched on, whichever is higher. Earnings
+  // raise the floor, so spending is always refunded and income is kept.
   private func SetMoney(on: Bool, announce: Bool) -> Void {
     this.m_money = on;
+    this.m_moneyFloor = 0;
     if on { this.TopUpMoney(); }
     this.Changed("Infinite money", on, announce);
   }
 
   private func TopUpMoney() -> Void {
     let player = this.m_player;
+    if !IsDefined(player) { return; }
     let ts = GameInstance.GetTransactionSystem(player.GetGame());
     let have = ts.GetItemQuantity(player, MarketSystem.Money());
-    let floor = ChoomConfig.MoneyFloor();
-    if have < floor {
-      ts.GiveItem(player, MarketSystem.Money(), floor - have);
+    this.m_moneyFloor = Max(this.m_moneyFloor, Max(ChoomConfig.MoneyFloor(), have));
+    if have < this.m_moneyFloor {
+      ts.GiveItem(player, MarketSystem.Money(), this.m_moneyFloor - have);
     }
   }
 
