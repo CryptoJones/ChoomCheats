@@ -11,7 +11,7 @@ build (GOG and Steam) without re-signing or injecting into the game.
 | Cheat | What it does | Default key |
 |---|---|---|
 | Infinite health | Engine god mode, health refilled every second | F6 |
-| Infinite money | Eddies kept at or above 1,000,000 | F7 |
+| Infinite money | Spending is refunded instantly; balance never drops below what you had when you turned it on (minimum 1,000,000) | F7 |
 | Invisible | NPCs can't see you | F8 |
 | Unlimited carry | +100,000 carry capacity, overweight effect cleared | F10 |
 
