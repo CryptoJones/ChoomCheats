@@ -139,8 +139,9 @@ public class ChoomCheats extends IScriptable {
   private func SetInvisible(on: Bool, announce: Bool) -> Void {
     let player = this.m_player;
     if !IsDefined(player) { return; }
+    // Same call the game uses for its post-spawn grace period: switches off
+    // the component NPCs and sensors use to see the player.
     player.SetInvisible(on);
-    player.UpdateVisibility();
     this.m_invisible = on;
     this.Changed("Invisible", on, announce);
   }
@@ -169,8 +170,10 @@ public class ChoomCheats extends IScriptable {
   }
 
   // ---- Re-apply tick ------------------------------------------------------
-  // God mode and the stat modifier persist on their own; health, money and
-  // the encumbered effect can drift, so they are re-applied while active.
+  // God mode and the stat modifier persist on their own. Health, money and
+  // the encumbered effect drift, and the game turns visibility back on after
+  // the spawn grace period and on EnablePlayerVisibilityEvent, so those are
+  // re-applied while active.
   private func AnyActive() -> Bool {
     return this.m_god || this.m_money || this.m_invisible || this.m_carry;
   }
@@ -191,6 +194,7 @@ public class ChoomCheats extends IScriptable {
     if this.m_god { this.RefillHealth(); }
     if this.m_money { this.TopUpMoney(); }
     if this.m_carry { this.ClearEncumbered(); }
+    if this.m_invisible && !this.m_player.IsInvisible() { this.m_player.SetInvisible(true); }
     this.ScheduleTick();
   }
 
